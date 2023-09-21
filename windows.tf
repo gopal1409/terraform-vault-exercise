@@ -15,6 +15,14 @@ resource "azurerm_subnet" "subnet" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes = ["10.0.2.0/24"]
 }
+resource "azurerm_public_ip" "bastion_host_publicip" {
+  name                = "${var.env}-${var.rg_name}-${random_string.myrandom.id}"
+  resource_group_name = azurerm_resource_group.rg.name  
+  location = azurerm_resource_group.rg.location
+  allocation_method   = "Static"
+  sku = "Standard"
+}
+
 resource "azurerm_network_interface" "ni" {
   #name = "${var.env}-${var.rg_name}-ni"
    name = "${var.env}-${var.rg_name}-${random_string.myrandom.id}"
@@ -25,10 +33,10 @@ resource "azurerm_network_interface" "ni" {
     name = "internal"
     subnet_id = azurerm_subnet.subnet.id
     private_ip_address_allocation="Dynamic"
+    public_ip_address_id           = azurerm_public_ip.bastion_host_publicip.id 
   }
 }
 # Locals Block for custom data
-
 
 # Resource: Azure Linux Virtual Machine
 resource "azurerm_windows_virtual_machine" "web_linuxvm" {
