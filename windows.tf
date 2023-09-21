@@ -33,7 +33,7 @@ resource "azurerm_network_interface" "ni" {
 # Resource: Azure Linux Virtual Machine
 resource "azurerm_windows_virtual_machine" "web_linuxvm" {
   
-   name = "${var.env}-${var.rg_name}-${random_string.myrandom.id}"
+   name = "${var.env}-${var.rg_name}"
   resource_group_name = azurerm_resource_group.rg.name  
   location = azurerm_resource_group.rg.location
   network_interface_ids = [ azurerm_network_interface.ni.id, ]
